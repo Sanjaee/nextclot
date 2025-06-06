@@ -38,9 +38,6 @@ interface QRProfile {
   };
 }
 
-// Environment-based API URL
-const API_BASE_URL = "http://8.215.196.12:4000";
-
 export default function EditPage() {
   const router = useRouter();
   const { uuid } = router.query;
@@ -67,7 +64,9 @@ export default function EditPage() {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/qr/${uuid}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/qr/${uuid}`
+      );
       const result = await response.json();
 
       if (result.success) {
@@ -110,11 +109,14 @@ export default function EditPage() {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(credentials),
+        }
+      );
 
       const result = await response.json();
       if (result.success) {
@@ -164,11 +166,14 @@ export default function EditPage() {
 
       console.log("Sending update data:", updateData); // Debug log
 
-      const response = await fetch(`${API_BASE_URL}/api/qr/${uuid}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updateData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/qr/${uuid}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updateData),
+        }
+      );
 
       const result = await response.json();
       console.log("Update response:", result); // Debug log

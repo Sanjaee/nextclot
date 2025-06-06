@@ -1,19 +1,19 @@
 // pages/scan/[uuid].tsx
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { 
-  Instagram, 
-  Twitter, 
-  Youtube, 
-  Linkedin, 
-  Facebook, 
-  Globe, 
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Instagram,
+  Twitter,
+  Youtube,
+  Linkedin,
+  Facebook,
+  Globe,
   ExternalLink,
   Music,
-  User
-} from 'lucide-react';
-import { useRouter } from 'next/router';
+  User,
+} from "lucide-react";
+import { useRouter } from "next/router";
 
 interface PublicProfile {
   uuid: string;
@@ -28,10 +28,6 @@ interface PublicProfile {
   facebook: string | null;
   website: string | null;
 }
-
-// Environment-based API URL
-const API_BASE_URL = 'http://8.215.196.12:4000' ;
-
 export default function ScanPage() {
   const router = useRouter();
   const { uuid } = router.query;
@@ -40,29 +36,31 @@ export default function ScanPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (uuid && typeof uuid === 'string') {
+    if (uuid && typeof uuid === "string") {
       fetchProfile();
     }
   }, [uuid]);
 
   const fetchProfile = async () => {
-    if (!uuid || typeof uuid !== 'string') {
+    if (!uuid || typeof uuid !== "string") {
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/public/qr/${uuid}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/public/qr/${uuid}`
+      );
       const result = await response.json();
-      
+
       if (result.success) {
         setProfile(result.data);
       } else {
-        setError(result.error || 'Profile not found');
+        setError(result.error || "Profile not found");
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      setError('Failed to load profile');
+      console.error("Error fetching profile:", error);
+      setError("Failed to load profile");
     } finally {
       setLoading(false);
     }
@@ -70,28 +68,32 @@ export default function ScanPage() {
 
   const formatSocialUrl = (platform: string, value: string) => {
     if (!value) return null;
-    
+
     // If already a full URL, return as is
-    if (value.startsWith('http://') || value.startsWith('https://')) {
+    if (value.startsWith("http://") || value.startsWith("https://")) {
       return value;
     }
-    
+
     // Remove @ symbol if present
-    const cleanValue = value.replace('@', '');
-    
+    const cleanValue = value.replace("@", "");
+
     switch (platform) {
-      case 'instagram':
+      case "instagram":
         return `https://instagram.com/${cleanValue}`;
-      case 'twitter':
+      case "twitter":
         return `https://twitter.com/${cleanValue}`;
-      case 'tiktok':
+      case "tiktok":
         return `https://tiktok.com/@${cleanValue}`;
-      case 'youtube':
+      case "youtube":
         return `https://youtube.com/@${cleanValue}`;
-      case 'linkedin':
-        return value.includes('linkedin.com') ? value : `https://linkedin.com/in/${cleanValue}`;
-      case 'facebook':
-        return value.includes('facebook.com') ? value : `https://facebook.com/${cleanValue}`;
+      case "linkedin":
+        return value.includes("linkedin.com")
+          ? value
+          : `https://linkedin.com/in/${cleanValue}`;
+      case "facebook":
+        return value.includes("facebook.com")
+          ? value
+          : `https://facebook.com/${cleanValue}`;
       default:
         return value;
     }
@@ -99,47 +101,47 @@ export default function ScanPage() {
 
   const socialLinks = [
     {
-      name: 'Instagram',
+      name: "Instagram",
       icon: Instagram,
       value: profile?.instagram,
-      color: 'bg-gradient-to-r from-purple-500 to-pink-500',
-      platform: 'instagram'
+      color: "bg-gradient-to-r from-purple-500 to-pink-500",
+      platform: "instagram",
     },
     {
-      name: 'Twitter',
+      name: "Twitter",
       icon: Twitter,
       value: profile?.twitter,
-      color: 'bg-black',
-      platform: 'twitter'
+      color: "bg-black",
+      platform: "twitter",
     },
     {
-      name: 'TikTok',
+      name: "TikTok",
       icon: Music,
       value: profile?.tiktok,
-      color: 'bg-black',
-      platform: 'tiktok'
+      color: "bg-black",
+      platform: "tiktok",
     },
     {
-      name: 'YouTube',
+      name: "YouTube",
       icon: Youtube,
       value: profile?.youtube,
-      color: 'bg-red-600',
-      platform: 'youtube'
+      color: "bg-red-600",
+      platform: "youtube",
     },
     {
-      name: 'LinkedIn',
+      name: "LinkedIn",
       icon: Linkedin,
       value: profile?.linkedin,
-      color: 'bg-blue-600',
-      platform: 'linkedin'
+      color: "bg-blue-600",
+      platform: "linkedin",
     },
     {
-      name: 'Facebook',
+      name: "Facebook",
       icon: Facebook,
       value: profile?.facebook,
-      color: 'bg-blue-700',
-      platform: 'facebook'
-    }
+      color: "bg-blue-700",
+      platform: "facebook",
+    },
   ];
 
   if (loading) {
@@ -161,18 +163,17 @@ export default function ScanPage() {
             <div className="text-red-500 mb-4">
               <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
             </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Profile Not Available</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">
+              Profile Not Available
+            </h2>
             <p className="text-gray-600 mb-4">
-              {error === 'Profile is not published' 
-                ? 'This profile is not published yet.'
-                : error === 'Profile is inactive'
-                ? 'This profile is currently inactive.'
-                : 'This profile could not be found or is no longer available.'
-              }
+              {error === "Profile is not published"
+                ? "This profile is not published yet."
+                : error === "Profile is inactive"
+                ? "This profile is currently inactive."
+                : "This profile could not be found or is no longer available."}
             </p>
-            <Button onClick={() => router.push('/')}>
-              Go Home
-            </Button>
+            <Button onClick={() => router.push("/")}>Go Home</Button>
           </CardContent>
         </Card>
       </div>
@@ -192,15 +193,15 @@ export default function ScanPage() {
                 {profile.avatar ? (
                   <img
                     src={profile.avatar}
-                    alt={profile.name || 'Profile'}
+                    alt={profile.name || "Profile"}
                     className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = '';
-                      target.style.display = 'none';
+                      target.src = "";
+                      target.style.display = "none";
                       // Show fallback
                       const fallback = target.nextElementSibling as HTMLElement;
-                      if (fallback) fallback.style.display = 'flex';
+                      if (fallback) fallback.style.display = "flex";
                     }}
                   />
                 ) : (
@@ -209,9 +210,9 @@ export default function ScanPage() {
                   </div>
                 )}
                 {profile.avatar && (
-                  <div 
+                  <div
                     className="w-24 h-24 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-gray-100 to-gray-200 items-center justify-center absolute top-0 left-0"
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                   >
                     <User className="w-10 h-10 text-gray-400" />
                   </div>
@@ -220,7 +221,7 @@ export default function ScanPage() {
 
               {/* Name */}
               <h1 className="text-2xl font-bold text-gray-800 mb-2 text-center">
-                {profile.name || 'Anonymous User'}
+                {profile.name || "Anonymous User"}
               </h1>
 
               {/* Bio */}
@@ -235,10 +236,10 @@ export default function ScanPage() {
                 <Button
                   className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg"
                   onClick={() => {
-                    const url = profile.website!.startsWith('http') 
-                      ? profile.website! 
+                    const url = profile.website!.startsWith("http")
+                      ? profile.website!
                       : `https://${profile.website!}`;
-                    window.open(url, '_blank');
+                    window.open(url, "_blank");
                   }}
                 >
                   <Globe className="w-4 h-4 mr-2" />
@@ -253,19 +254,21 @@ export default function ScanPage() {
         {/* Social Links */}
         <div className="space-y-3">
           {socialLinks.map((social) => {
-            const url = formatSocialUrl(social.platform, social.value || '');
+            const url = formatSocialUrl(social.platform, social.value || "");
             if (!url) return null;
 
             const IconComponent = social.icon;
-            
+
             return (
-              <Card 
-                key={social.name} 
+              <Card
+                key={social.name}
                 className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                onClick={() => window.open(url, '_blank')}
+                onClick={() => window.open(url, "_blank")}
               >
                 <CardContent className="p-0">
-                  <div className={`${social.color} text-white p-4 flex items-center justify-between group`}>
+                  <div
+                    className={`${social.color} text-white p-4 flex items-center justify-between group`}
+                  >
                     <div className="flex items-center space-x-4">
                       <div className="p-2 bg-white bg-opacity-20 rounded-lg">
                         <IconComponent className="w-6 h-6" />
@@ -273,7 +276,7 @@ export default function ScanPage() {
                       <div>
                         <h3 className="font-semibold text-lg">{social.name}</h3>
                         <p className="text-white text-opacity-90 text-sm">
-                          {social.value?.replace('@', '') || 'Visit Profile'}
+                          {social.value?.replace("@", "") || "Visit Profile"}
                         </p>
                       </div>
                     </div>
@@ -286,13 +289,15 @@ export default function ScanPage() {
         </div>
 
         {/* Empty State */}
-        {!socialLinks.some(link => link.value) && !profile.website && (
+        {!socialLinks.some((link) => link.value) && !profile.website && (
           <Card className="mt-6 border-0 shadow-lg">
             <CardContent className="p-8 text-center">
               <div className="text-gray-400 mb-4">
                 <Globe className="w-12 h-12 mx-auto" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">No Links Added Yet</h3>
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                No Links Added Yet
+              </h3>
               <p className="text-gray-500 text-sm">
                 This profile doesn't have any social links or website added yet.
               </p>
@@ -302,9 +307,7 @@ export default function ScanPage() {
 
         {/* Footer */}
         <div className="text-center mt-8 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-400">
-            Powered by QR Profile System
-          </p>
+          <p className="text-xs text-gray-400">Powered by QR Profile System</p>
         </div>
       </div>
     </div>
