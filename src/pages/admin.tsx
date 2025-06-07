@@ -318,6 +318,23 @@ export default function AdminPage() {
                         checked={user.isActive}
                         onCheckedChange={() => toggleUserStatus(user.id)}
                       />
+                      {user.qrProfile?.isPublished && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            window.open(
+                              `/public/${user.qrProfile!.uuid}`,
+                              "_blank"
+                            )
+                          }
+                          title="Lihat QR Code Publik"
+                          className="bg-blue-50 hover:bg-blue-100 border-blue-200"
+                        >
+                          <QrCode className="w-4 h-4 mr-1 text-blue-600" />
+                          QR Publik
+                        </Button>
+                      )}
                     </div>
                   </div>
 
@@ -354,18 +371,35 @@ export default function AdminPage() {
                               Edit URL
                             </Button>
                             {user.qrProfile.isPublished && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() =>
-                                  copyToClipboard(
-                                    getFrontendViewUrl(user.qrProfile!.uuid)
-                                  )
-                                }
-                              >
-                                <Eye className="w-3 h-3 mr-1" />
-                                View URL
-                              </Button>
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    copyToClipboard(
+                                      getFrontendViewUrl(user.qrProfile!.uuid)
+                                    )
+                                  }
+                                >
+                                  <Eye className="w-3 h-3 mr-1" />
+                                  View URL
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    window.open(
+                                      `/public/${user.qrProfile!.uuid}`,
+                                      "_blank"
+                                    )
+                                  }
+                                  title="Lihat QR Code Publik"
+                                  className="bg-blue-50 hover:bg-blue-100 border-blue-200"
+                                >
+                                  <QrCode className="w-3 h-3 mr-1 text-blue-600" />
+                                  View QR
+                                </Button>
+                              </>
                             )}
                           </div>
                         </div>
